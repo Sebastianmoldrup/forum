@@ -1,5 +1,9 @@
 "use client";
 
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import { auth } from "@/app/firebase/config";
+
+
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -28,7 +32,7 @@ const formSchema = z.object({
     .regex(/^[a-zA-Z0-9_]+$/, {
       message: "Passord kan bare inneholde bokstaver og tall",
     })
-    .min(8, { message: "Brukernavn må være minst 8 bokstaver" })
+    .min(4, { message: "Brukernavn må være minst 4 bokstaver" })
     .max(50, { message: "Brukernavn kan ikke være lengre en 50 bokstaver" }),
 });
 
@@ -46,6 +50,18 @@ export function SignUpForm() {
     // Do something with the form values.
     // ✅ This will be type-safe and validated.
     console.log(values);
+    createUserWithEmailAndPassword(auth, values.email, values.password)
+      .then((userCredential) => {
+        // Signed up 
+        const user = userCredential.user;
+        console.log(user);
+        // ...
+      })
+      .catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        // ..
+      });
   }
 
   return (
