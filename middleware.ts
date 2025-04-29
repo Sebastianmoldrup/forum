@@ -1,28 +1,18 @@
-import { NextResponse } from 'next/server'
-import type { NextRequest } from 'next/server'
-import { auth } from "@/app/firebase/config";
+// middleware.ts
+import { NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
 
-const authenticated = false;
+// Configure which paths require authentication
+// const protectedPaths = ["/dashboard", "/profile", "/settings"];
+// const authRoutes = ["/login", "/signup", "/forgot-password"];
 
-// This function can be marked `async` if using `await` inside
 export function middleware(request: NextRequest) {
-  // // Get the current pathname
   // const { pathname } = request.nextUrl;
-  //
-  // // Allow requests to the login page without redirection
-  // if (pathname === "/login") {
-  //   return NextResponse.next();
-  // }
-  //
-  // // Redirect to /login if the user is not authenticated
-  // if (!authenticated) {
-  //   return NextResponse.redirect(new URL('/login', request.url));
-  // }
-  //
+  // return NextResponse.redirect(new URL("/dashboard", request.url));
   // return NextResponse.next();
 }
 
-// See "Matching Paths" below to learn more
+// Configure matcher to run middleware only on specific paths
 export const config = {
-  matcher: '/:path*',
-}
+  matcher: [],
+};
