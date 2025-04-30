@@ -13,6 +13,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { userSignIn } from "@/app/firebase/client/functions";
 
 const formSchema = z.object({
   email: z.string().email({ message: "Ugyldig e-postadresse" }),
@@ -35,9 +36,8 @@ export function LoginForm() {
   });
 
   function onSubmit(values: z.infer<typeof formSchema>) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
     console.log(values);
+    userSignIn(values.email, values.password);
   }
 
   return (

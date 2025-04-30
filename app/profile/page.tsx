@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { signout } from "../firebase/functions";
+import { signout } from "../firebase/client/functions.ts";
 
 export default function ProfilePage() {
   return <div className="">

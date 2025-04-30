@@ -1,14 +1,12 @@
-import { auth } from "@/app/firebase/config";
+import { auth } from "@/app/firebase/client/config";
 import {
   signOut,
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
 } from "firebase/auth";
 
-export const isAuthenticated = () => {};
-
-export const signin = (email: string, password: string) => {
-  signInWithEmailAndPassword(auth, email, password)
+export const userSignIn = async (email: string, password: string) => {
+  await signInWithEmailAndPassword(auth, email, password)
     .then((userCredential) => {
       // Signed in
       const user = userCredential.user;
@@ -22,8 +20,8 @@ export const signin = (email: string, password: string) => {
     });
 };
 
-export const signout = () => {
-  signOut(auth)
+export const userSignOut = async () => {
+  await signOut(auth)
     .then(() => {
       // Sign-out successful.
       console.log("signed out");
@@ -34,8 +32,8 @@ export const signout = () => {
     });
 };
 
-export const signup = (email: string, password: string) => {
-  createUserWithEmailAndPassword(auth, email, password)
+export const userSignUp = async (email: string, password: string) => {
+  await createUserWithEmailAndPassword(auth, email, password)
     .then((userCredential) => {
       const user = userCredential.user;
       console.log(user);
@@ -47,4 +45,5 @@ export const signup = (email: string, password: string) => {
     });
 };
 
-export const recover = (email: string) => {};
+export const recover = (email: string) => { };
+

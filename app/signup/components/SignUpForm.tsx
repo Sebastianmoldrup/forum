@@ -1,9 +1,4 @@
 "use client";
-
-import { createUserWithEmailAndPassword } from "firebase/auth";
-import { auth } from "@/app/firebase/config";
-
-
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -47,21 +42,7 @@ export function SignUpForm() {
   });
 
   function onSubmit(values: z.infer<typeof formSchema>) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
     console.log(values);
-    createUserWithEmailAndPassword(auth, values.email, values.password)
-      .then((userCredential) => {
-        // Signed up 
-        const user = userCredential.user;
-        console.log(user);
-        // ...
-      })
-      .catch((error) => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        // ..
-      });
   }
 
   return (
