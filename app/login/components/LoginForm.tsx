@@ -13,7 +13,6 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { userSignIn } from "@/app/firebase/client/functions";
 
 const formSchema = z.object({
   email: z.string().email({ message: "Ugyldig e-postadresse" }),

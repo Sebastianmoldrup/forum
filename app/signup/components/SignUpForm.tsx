@@ -41,8 +41,21 @@ export function SignUpForm() {
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    // console.log(values);
+
+    const res = await fetch("/api/users/create", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        email: values.email,
+        password: values.password,
+      }),
+    });
+
+    console.log(res);
+    const data = await res.json();
+    console.log(data);
   }
 
   return (

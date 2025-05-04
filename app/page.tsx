@@ -1,49 +1,19 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { auth } from "@/app/firebase/client/config";
-import { onAuthStateChanged } from "firebase/auth";
-import { useEffect, useState } from "react";
+// import { useEffect } from "react";
 
 export default function Home() {
-  const [authenticated, setAuthenticated] = useState(false);
-  console.log(authenticated);
-
-  // onAuthStateChanged(auth, async (user) => {
-  //   if (user) {
-  //     console.log("User UID:", user.uid);
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     const res = await fetch("/api/users/create");
+  //     const data = await res.json();
+  //     console.log(data.message);
+  //   };
   //
-  //     const token = await user.getIdToken();
-  //     console.log("ID Token:", token);
-  //   } else {
-  //     console.log("No user is signed in.");
-  //   }
-  // });
-  onAuthStateChanged(auth, async (user) => {
-    if (user) {
-      const token = await user.getIdToken();
+  //   fetchData();
+  // }, []);
 
-      // Send the token to your API route
-      const res = await fetch("/api/auth", {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-      });
-
-      if (res.ok) {
-        const data = await res.json();
-        console.log("Server verified user:", data);
-      } else {
-        console.log("Failed to verify user.");
-      }
-    } else {
-      console.log("No user is signed in.");
-    }
-  });
-
-  useEffect(() => { }, [])
   return (
     <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
       <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
