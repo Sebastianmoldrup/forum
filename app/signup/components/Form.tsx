@@ -12,6 +12,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { createClient } from "@/utils/supabase/client";
 
 const formSchema = z.object({
   email: z.string().email({ message: "Ugyldig e-postadresse" }),
@@ -42,20 +43,20 @@ export function SignUpForm() {
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    // console.log(values);
+    console.log(values);
+    const supabase = createClient();
 
-    const res = await fetch("/api/users/create", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        email: values.email,
-        password: values.password,
-      }),
+    const { data, error } = await supabase.auth.signUp({
+      email: values.email,
+      password: values.password,
     });
 
-    console.log(res);
-    const data = await res.json();
-    console.log(data);
+    if (error) {
+      console.error("Error signing up:", error);
+      return;
+    }
+
+    console.log("User signed up:", data);
   }
 
   return (

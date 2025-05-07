@@ -8,10 +8,10 @@ export default function Navigation() {
       </div>
       <ul className="flex space-x-4">
         <li>
-          <a href="">Grupper</a>
+          <Link href="/">Grupper</Link>
         </li>
         <li>
-          <a href="">Profil</a>
+          <Link href="/">Profil</Link>
         </li>
       </ul>
     </nav>
