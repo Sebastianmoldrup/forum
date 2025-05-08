@@ -11,7 +11,7 @@ export default function SignUpPage() {
       </div>
       <div className="w-full space-x-4 max-w-md">
         <Button>
-          <Link href={"login"}>Allerede opprettet?</Link>
+          <Link href={"/signin"}>Allerede opprettet?</Link>
         </Button>
       </div>
     </main>

@@ -17,13 +17,6 @@ import { useState } from "react";
 
 const formSchema = z.object({
   email: z.string().email({ message: "Ugyldig e-postadresse" }),
-  username: z
-    .string()
-    .regex(/^[a-zA-Z0-9_]+$/, {
-      message: "Brukernavn kan bare inneholde bokstaver og tall",
-    })
-    .min(3, { message: "Brukernavn må være minst 3 bokstaver" })
-    .max(50, { message: "Brukernavn kan ikke være lengre en 50 bokstaver" }),
   password: z
     .string()
     .regex(/^[a-zA-Z0-9_]+$/, {
@@ -33,7 +26,7 @@ const formSchema = z.object({
     .max(50, { message: "Brukernavn kan ikke være lengre en 50 bokstaver" }),
 });
 
-export function SignUpForm() {
+export function SignInForm() {
   const [error, setError] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
 
@@ -41,40 +34,39 @@ export function SignUpForm() {
     resolver: zodResolver(formSchema),
     defaultValues: {
       email: "",
-      username: "",
       password: "",
     },
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
+    const supabase = createClient();
+
     try {
-      const supabase = createClient();
-      const { error } = await supabase.auth.signUp({
+      const { error } = await supabase.auth.signInWithPassword({
         email: values.email,
         password: values.password,
       });
 
       if (error) {
-        if (error.message === "User already registered") {
-          setErrorMsg("Denne e-postadressen er allerede i bruk.");
+        if (error.code === 'invalid_credentials') {
+          setErrorMsg('Email eller passord stemmer ikke.');
         } else {
-          setErrorMsg("Det oppstod en feil under registreringen.");
+          setErrorMsg('Noe gikk feil, prøv igjen');
         }
-
         setError(true);
         return;
       }
 
+      return;
     } catch (error) {
-      setError(true);
-      setErrorMsg('Noe gikk galt på serveren');
       console.error('Unexpected error:', error);
+      setError(true);
     }
   }
 
   return (
     <>
-      {error && errorMsg ? <div>{errorMsg}</div> : null}
+      {error ? <div>{errorMsg}</div> : null}
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 w-full">
           <FormField
@@ -85,19 +77,6 @@ export function SignUpForm() {
                 <FormLabel>Email</FormLabel>
                 <FormControl>
                   <Input placeholder="Email" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="username"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Brukernavn</FormLabel>
-                <FormControl>
-                  <Input placeholder="Brukernavn" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -116,7 +95,7 @@ export function SignUpForm() {
               </FormItem>
             )}
           />
-          <Button type="submit">Lag ny bruker</Button>
+          <Button type="submit">Logg inn</Button>
         </form>
       </Form>
     </>
