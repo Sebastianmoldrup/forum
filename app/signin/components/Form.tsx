@@ -1,8 +1,12 @@
 "use client";
+import { createClient } from "@/utils/supabase/client";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import {
   Form,
   FormControl,
@@ -11,9 +15,6 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { createClient } from "@/utils/supabase/client";
-import { useState } from "react";
 
 const formSchema = z.object({
   email: z.string().email({ message: "Ugyldig e-postadresse" }),
@@ -27,8 +28,12 @@ const formSchema = z.object({
 });
 
 export function SignInForm() {
+  // State
   const [error, setError] = useState(false);
-  const [errorMsg, setErrorMsg] = useState('');
+  const [errorMsg, setErrorMsg] = useState("");
+
+  // Router
+  const router = useRouter();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -48,18 +53,18 @@ export function SignInForm() {
       });
 
       if (error) {
-        if (error.code === 'invalid_credentials') {
-          setErrorMsg('Email eller passord stemmer ikke.');
+        if (error.code === "invalid_credentials") {
+          setErrorMsg("Email eller passord stemmer ikke.");
         } else {
-          setErrorMsg('Noe gikk feil, prøv igjen');
+          setErrorMsg("Noe gikk feil, prøv igjen");
         }
         setError(true);
         return;
       }
 
-      return;
+      router.push("/profil");
     } catch (error) {
-      console.error('Unexpected error:', error);
+      console.error("Unexpected error:", error);
       setError(true);
     }
   }
@@ -68,7 +73,10 @@ export function SignInForm() {
     <>
       {error ? <div>{errorMsg}</div> : null}
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 w-full">
+        <form
+          onSubmit={form.handleSubmit(onSubmit)}
+          className="space-y-4 w-full"
+        >
           <FormField
             control={form.control}
             name="email"

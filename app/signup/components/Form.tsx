@@ -35,7 +35,7 @@ const formSchema = z.object({
 
 export function SignUpForm() {
   const [error, setError] = useState(false);
-  const [errorMsg, setErrorMsg] = useState('');
+  const [errorMsg, setErrorMsg] = useState("");
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -49,7 +49,7 @@ export function SignUpForm() {
   async function onSubmit(values: z.infer<typeof formSchema>) {
     try {
       const supabase = createClient();
-      const { error } = await supabase.auth.signUp({
+      const { data, error } = await supabase.auth.signUp({
         email: values.email,
         password: values.password,
       });
@@ -65,18 +65,64 @@ export function SignUpForm() {
         return;
       }
 
+      // Check if user was created successfully
+      if (data?.user?.id) {
+        console.log("User data:", data);
+
+        // await createUserProfile(supabase, {
+        //   id: data.user.id,
+        //   email: values.email,
+        //   username: values.username,
+        //   avatar_url: "",
+        //   created_at: new Date().toISOString(),
+        // });
+      }
     } catch (error) {
       setError(true);
-      setErrorMsg('Noe gikk galt på serveren');
-      console.error('Unexpected error:', error);
+      setErrorMsg("Noe gikk galt på serveren");
+      console.error("Unexpected error:", error);
     }
   }
+
+  // const createUserProfile = async (
+  //   supabase: any,
+  //   {
+  //     id,
+  //     email,
+  //     username,
+  //     avatar_url,
+  //     created_at,
+  //   }: {
+  //     id: string;
+  //     email: string;
+  //     username: string;
+  //     avatar_url: string;
+  //     created_at: string;
+  //   },
+  // ) => {
+  //   const { error } = await supabase.from("users").update({
+  //     uid: id,
+  //     email: email,
+  //     username: username,
+  //     avatar_url: avatar_url,
+  //     created_at: created_at,
+  //   });
+  //
+  //   if (error) {
+  //     console.error("Error creating user profile:", error);
+  //     setError(true);
+  //     setErrorMsg("Noe gikk galt med å opprette profilen din.");
+  //   }
+  // };
 
   return (
     <>
       {error && errorMsg ? <div>{errorMsg}</div> : null}
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 w-full">
+        <form
+          onSubmit={form.handleSubmit(onSubmit)}
+          className="space-y-4 w-full"
+        >
           <FormField
             control={form.control}
             name="email"

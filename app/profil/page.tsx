@@ -1,17 +1,10 @@
-'use client';
+"use client";
+import { Button } from "@/components/ui/button";
 import { createClient } from "@/utils/supabase/client";
-import { useEffect, useState } from 'react';
+import { useEffect, useState } from "react";
 
 export default function ProfilePage() {
   const [user, setUser] = useState(null);
-  // const supabase = createClient();
-  // // const { data, error } = await supabase.auth.getSession();
-  // const { data, error } = await supabase.auth.getUser();
-  //
-  // console.log(data);
-  // if (error) {
-  //   // ... error
-  // }
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -23,10 +16,27 @@ export default function ProfilePage() {
 
       // Update user state
       console.log(data);
-    }
+    };
     fetchUser();
   }, []);
 
+  const signOut = async () => {
+    const supabase = createClient();
+    console.log("signing out");
+    const { error } = await supabase.auth.signOut();
+
+    if (error) {
+      console.error("Error signing out:", error);
+    }
+    return;
+  };
   // Update profile page to show user state values
-  return <main>Profil</main>
+  return (
+    <main>
+      <div>
+        <h2>Din profil</h2>
+        <Button onClick={() => signOut()}>Logg ut</Button>
+      </div>
+    </main>
+  );
 }
