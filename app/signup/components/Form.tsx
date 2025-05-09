@@ -1,6 +1,7 @@
 "use client";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import {
@@ -14,6 +15,9 @@ import {
 import { Input } from "@/components/ui/input";
 import { createClient } from "@/utils/supabase/client";
 import { useState } from "react";
+import { register } from "@/app/signup/actions/register";
+import { userInfo } from "node:os";
+import Router from "next/router";
 
 const formSchema = z.object({
   email: z.string().email({ message: "Ugyldig e-postadresse" }),
@@ -36,6 +40,7 @@ const formSchema = z.object({
 export function SignUpForm() {
   const [error, setError] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
+  const router = useRouter();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -67,53 +72,25 @@ export function SignUpForm() {
 
       // Check if user was created successfully
       if (data?.user?.id) {
-        console.log("User data:", data);
-
-        // await createUserProfile(supabase, {
-        //   id: data.user.id,
-        //   email: values.email,
-        //   username: values.username,
-        //   avatar_url: "",
-        //   created_at: new Date().toISOString(),
-        // });
+        // Store user info in userData obj
+        const userData = {
+          uid: data.user.id,
+          email: values.email,
+          username: values.username,
+          avatar_url: "",
+          created_at: data.user.created_at,
+        }
+        // Run server action to register user in users table
+        await register(userData);
       }
+
+      router.push('/');
     } catch (error) {
       setError(true);
       setErrorMsg("Noe gikk galt på serveren");
       console.error("Unexpected error:", error);
     }
   }
-
-  // const createUserProfile = async (
-  //   supabase: any,
-  //   {
-  //     id,
-  //     email,
-  //     username,
-  //     avatar_url,
-  //     created_at,
-  //   }: {
-  //     id: string;
-  //     email: string;
-  //     username: string;
-  //     avatar_url: string;
-  //     created_at: string;
-  //   },
-  // ) => {
-  //   const { error } = await supabase.from("users").update({
-  //     uid: id,
-  //     email: email,
-  //     username: username,
-  //     avatar_url: avatar_url,
-  //     created_at: created_at,
-  //   });
-  //
-  //   if (error) {
-  //     console.error("Error creating user profile:", error);
-  //     setError(true);
-  //     setErrorMsg("Noe gikk galt med å opprette profilen din.");
-  //   }
-  // };
 
   return (
     <>
