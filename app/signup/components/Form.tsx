@@ -1,7 +1,6 @@
 "use client";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import {
@@ -13,11 +12,9 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { createClient } from "@/utils/supabase/client";
+import { signUp } from "@/utils/supabase/actions/signUp";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { register } from "@/app/signup/actions/register";
-import { userInfo } from "node:os";
-import Router from "next/router";
 
 const formSchema = z.object({
   email: z.string().email({ message: "Ugyldig e-postadresse" }),
@@ -38,8 +35,7 @@ const formSchema = z.object({
 });
 
 export function SignUpForm() {
-  const [error, setError] = useState(false);
-  const [errorMsg, setErrorMsg] = useState("");
+  const [error, setError] = useState<string | null>(null);
   const router = useRouter();
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -52,49 +48,19 @@ export function SignUpForm() {
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    try {
-      const supabase = createClient();
-      const { data, error } = await supabase.auth.signUp({
-        email: values.email,
-        password: values.password,
-      });
-
-      if (error) {
-        if (error.message === "User already registered") {
-          setErrorMsg("Denne e-postadressen er allerede i bruk.");
-        } else {
-          setErrorMsg("Det oppstod en feil under registreringen.");
-        }
-
-        setError(true);
-        return;
-      }
-
-      // Check if user was created successfully
-      if (data?.user?.id) {
-        // Store user info in userData obj
-        const userData = {
-          uid: data.user.id,
-          email: values.email,
-          username: values.username,
-          avatar_url: "",
-          created_at: data.user.created_at,
-        }
-        // Run server action to register user in users table
-        await register(userData);
-      }
-
-      router.push('/');
-    } catch (error) {
-      setError(true);
-      setErrorMsg("Noe gikk galt på serveren");
-      console.error("Unexpected error:", error);
+    // console.log("Form values:", values);
+    const { validated, error } = await signUp(values);
+    if (!validated || error) {
+      // console.error("Error:", error);
+      setError(error);
+    } else if (validated) {
+      router.push("/");
     }
   }
 
   return (
     <>
-      {error && errorMsg ? <div>{errorMsg}</div> : null}
+      {error && <div className="text-red-500">{error}</div>}
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}

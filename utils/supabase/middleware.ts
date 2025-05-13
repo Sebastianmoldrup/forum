@@ -36,7 +36,7 @@ export async function updateSession(request: NextRequest) {
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  console.log("User:", user);
+  // console.log("User:", user);
 
   const url = request.nextUrl.clone();
   if (
@@ -50,12 +50,12 @@ export async function updateSession(request: NextRequest) {
     return NextResponse.redirect(url);
   } else if (
     user &&
-    request.nextUrl.pathname.startsWith("/signin") ||
-    request.nextUrl.pathname.startsWith("/signup")
+    (request.nextUrl.pathname.startsWith("/signin") ||
+      request.nextUrl.pathname.startsWith("/signup"))
   ) {
     // User logged in and tries to access signin/signup, redirect to dashboard
     // const url = request.nextUrl.clone();
-    url.pathname = "/"
+    url.pathname = "/";
     return NextResponse.redirect(url);
   }
 

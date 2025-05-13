@@ -3,9 +3,11 @@ import { Button } from "@/components/ui/button";
 import { getUser } from "@/utils/supabase/actions/getUser";
 import { createClient } from "@/utils/supabase/client";
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 
 export default function ProfilePage() {
   const [userProfile, setUserProfile] = useState({});
+  const router = useRouter();
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -15,9 +17,7 @@ export default function ProfilePage() {
       setUserProfile(userData);
     };
     fetchUser();
-    console.log(userProfile);
   }, []);
-
 
   const signOut = async () => {
     const supabase = createClient();
@@ -26,6 +26,8 @@ export default function ProfilePage() {
     if (error) {
       console.error("Error signing out:", error);
     }
+
+    router.push("/signin");
     return;
   };
 

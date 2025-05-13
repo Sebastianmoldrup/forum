@@ -1,4 +1,4 @@
-'use server';
+"use server";
 
 import { createClient } from "@/utils/supabase/server";
 
@@ -7,23 +7,28 @@ export const register = async ({
   uid,
   username,
   email,
-  avatar_url
-}:
-  {
-    created_at: string,
-    uid: string,
-    username: string,
-    email: string,
-    avatar_url: string
-  }) => {
+  avatar_url,
+}: {
+  created_at: string;
+  uid: string;
+  username: string;
+  email: string;
+  avatar_url: string;
+}) => {
   const supabase = await createClient();
 
   const { error } = await supabase
-    .from('users')
-    .insert({ uid: uid, username: username, email: email, avatar_url: avatar_url, created_at: created_at });
-  console.log('register run');
+    .from("users")
+    .insert({
+      uid: uid,
+      username: username,
+      email: email,
+      avatar_url: avatar_url,
+      created_at: created_at,
+    });
+  console.log("register run");
 
   if (error) {
-    console.error('error:', error);
+    console.error("error:", error);
   }
-}
+};
