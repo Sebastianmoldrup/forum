@@ -1,26 +1,58 @@
 "use client";
 import { Button } from "@/components/ui/button";
-import { getUser } from "@/utils/supabase/actions/getUser";
 import { createClient } from "@/utils/supabase/client";
-import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { getUser } from "@/utils/supabase/actions/getUser";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { UsernameInput } from "@/app/profil/components/UsernameInput";
+import { EmailInput } from "@/app/profil/components/EmailInput";
+import { AvatarInput } from "./components/AvatarInput";
+import { ProfileForm } from "./components/Form";
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+
+interface Profile {
+  id: number;
+  uid: string;
+  username: string;
+  email: string;
+  avatar_url: string;
+  created_at: string;
+}
 
 export default function ProfilePage() {
-  const [userProfile, setUserProfile] = useState({});
+  // State
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [profile, setProfile] = useState<Profile | null>(null);
+  // console.log("profile", profile);
+
+  // Router
   const router = useRouter();
+
+  // Supabase client
+  const supabase = createClient();
 
   useEffect(() => {
     const fetchUser = async () => {
-      // const supabase = createClient();
-      // const { data: userData, error: userError } = await supabase.auth.getUser();
-      const { user: userData, error: userError } = await getUser();
-      setUserProfile(userData);
+      const { data, error } = await getUser();
+
+      if (error) {
+        setError(error);
+      }
+
+      console.log("user data", data);
+      console.log("user error", error);
+
+      setProfile(data);
+
     };
     fetchUser();
   }, []);
 
+
   const signOut = async () => {
-    const supabase = createClient();
     const { error } = await supabase.auth.signOut();
 
     if (error) {
@@ -33,10 +65,26 @@ export default function ProfilePage() {
 
   // Update profile page to show user state values
   return (
-    <main>
-      <div>
-        <h2>Din profil</h2>
-        <Button onClick={() => signOut()}>Logg ut</Button>
+    <main className="flex flex-col items-center justify-center min-h-screen p-4">
+      <div className="grid grid-cols-4 justify-center p-4">
+        <div className="space-y-4">
+          <Avatar>
+            <AvatarImage src={profile?.avatar_url} />
+            <AvatarFallback>A</AvatarFallback>
+          </Avatar>
+          <Button onClick={() => signOut()}>Logg ut</Button>
+        </div>
+        {error ?
+          <div>{error}</div> :
+          <div className="col-span-3 uppercase">
+            <h2 className="font-semibold text-2xl mb-2">din profil</h2>
+            <div className="space-y-4">
+              <UsernameInput />
+              <EmailInput />
+              <AvatarInput />
+              <div className="">Opprettet: {profile?.created_at}</div>
+            </div>
+          </div>}
       </div>
     </main>
   );
