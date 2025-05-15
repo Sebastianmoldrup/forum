@@ -82,9 +82,9 @@ export default function ProfilePage() {
               TODO:
               Add props to pass user id + username (add types)
               */}
-              <UsernameInput />
-              <EmailInput />
-              <AvatarInput />
+              {/* <UsernameInput /> */}
+              {/* <EmailInput /> */}
+              {/* <AvatarInput /> */}
               <div className="">Opprettet: {profile?.created_at}</div>
             </div>
           </div>
