@@ -23,11 +23,11 @@ const formSchema = z.object({
     })
     .min(3, { message: "Brukernavn må være minst 3 bokstaver" })
     .max(50, { message: "Brukernavn kan ikke være lengre en 50 bokstaver" }),
+  avatar: z.string().optional(),
 });
 
-export function ProfileForm({ data }: { data: { username, email } }) {
+export function ProfileForm() {
   const [error, setError] = useState<string | null>(null);
-  console.log("data", data);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -56,7 +56,7 @@ export function ProfileForm({ data }: { data: { username, email } }) {
               <FormItem>
                 <FormLabel>Email</FormLabel>
                 <FormControl>
-                  <Input placeholder={data.email} {...field} />
+                  <Input placeholder={"email"} {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -69,12 +69,26 @@ export function ProfileForm({ data }: { data: { username, email } }) {
               <FormItem>
                 <FormLabel>Brukernavn</FormLabel>
                 <FormControl>
-                  <Input placeholder={data.username} {...field} />
+                  <Input placeholder={"username"} {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
+          <FormField
+            control={form.control}
+            name="avatar"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Avatar</FormLabel>
+                <FormControl>
+                  <Input placeholder={"avatar"} {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
           <Button type="submit">Oppdater bruker</Button>
         </form>
       </Form>

@@ -5,12 +5,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { getUser } from "@/utils/supabase/actions/getUser";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { UsernameInput } from "@/app/profil/components/UsernameInput";
-import { EmailInput } from "@/app/profil/components/EmailInput";
-import { AvatarInput } from "./components/AvatarInput";
 import { ProfileForm } from "./components/Form";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 
 interface Profile {
   id: number;
@@ -77,16 +72,7 @@ export default function ProfilePage() {
         ) : (
           <div className="col-span-3 uppercase">
             <h2 className="font-semibold text-2xl mb-2">din profil</h2>
-            <div className="space-y-4">
-              {/*
-              TODO:
-              Add props to pass user id + username (add types)
-              */}
-              {/* <UsernameInput /> */}
-              {/* <EmailInput /> */}
-              {/* <AvatarInput /> */}
-              <div className="">Opprettet: {profile?.created_at}</div>
-            </div>
+            <ProfileForm />
           </div>
         )}
       </div>
