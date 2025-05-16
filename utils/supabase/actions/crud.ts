@@ -41,3 +41,45 @@ export const updateUserTable = async <K extends keyof UserColumns>({
 
   return { success: true, error: false };
 };
+
+export const createUser = async () => {
+  const supabase = await createClient();
+
+  const { data, error } = await supabase
+    .from("users")
+    .insert({});
+
+  if (error) {
+    return { success: false, error: true };
+  }
+
+  return { success: true, error: false, data };
+};
+
+export const readUser = async () => {
+  const supabase = await createClient();
+
+  const { data, error } = await supabase
+    .from("users")
+    .select("*");
+
+  if (error) {
+    return { success: false, error: true };
+  }
+
+  return { success: true, error: false, data };
+};
+
+export const updateUser = async () => {
+};
+
+export const deleteUser = async () => {
+  const supabase = await createClient();
+  const { error } = await supabase.auth.signOut();
+
+  if (error) {
+    return { success: false, error: true };
+  }
+
+  return { success: true, error: false };
+};
