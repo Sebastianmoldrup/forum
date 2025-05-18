@@ -1,10 +1,10 @@
 "use client";
-import { createClient } from "@/utils/supabase/client";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
+import { signIn } from "@/utils/supabase/actions/signIn";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -29,8 +29,7 @@ const formSchema = z.object({
 
 export function SignInForm() {
   // State
-  const [error, setError] = useState(false);
-  const [errorMsg, setErrorMsg] = useState("");
+  const [error, setError] = useState("");
 
   // Router
   const router = useRouter();
@@ -44,29 +43,15 @@ export function SignInForm() {
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    const supabase = createClient();
+    const { success, error } = await signIn(values);
 
-    try {
-      const { error } = await supabase.auth.signInWithPassword({
-        email: values.email,
-        password: values.password,
-      });
-
-      if (error) {
-        if (error.code === "invalid_credentials") {
-          setErrorMsg("Email eller passord stemmer ikke.");
-        } else {
-          setErrorMsg("Noe gikk feil, prøv igjen");
-        }
-        setError(true);
-        return;
-      }
-
-      router.push("/profil");
-    } catch (error) {
-      console.error("Unexpected error:", error);
-      setError(true);
+    if (error) {
+      setError("Noe gikk galt, prøv igjen");
+      return;
     }
+
+    console.log("Sign in successful", success);
+    router.push("/");
   }
 
   return (

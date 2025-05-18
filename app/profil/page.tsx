@@ -18,9 +18,9 @@ interface Profile {
 
 export default function ProfilePage() {
   // State
-  const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
-  const [profile, setProfile] = useState<Profile | null>(null);
+  // const [error, setError] = useState<string | null>(null);
+  // const [loading, setLoading] = useState(false);
+  // const [profile, setProfile] = useState<Profile | null>(null);
   // console.log("profile", profile);
 
   // Router
@@ -29,21 +29,21 @@ export default function ProfilePage() {
   // Supabase client
   const supabase = createClient();
 
-  useEffect(() => {
-    const fetchUser = async () => {
-      const { data, error } = await getUser();
-
-      if (error) {
-        setError(error);
-      }
-
-      console.log("user data", data);
-      console.log("user error", error);
-
-      setProfile(data);
-    };
-    fetchUser();
-  }, []);
+  // useEffect(() => {
+  //   const fetchUser = async () => {
+  //     const { data, error } = await getUser();
+  //
+  //     if (error) {
+  //       setError(error);
+  //     }
+  //
+  //     console.log("user data", data);
+  //     console.log("user error", error);
+  //
+  //     setProfile(data);
+  //   };
+  //   fetchUser();
+  // }, []);
 
   const signOut = async () => {
     const { error } = await supabase.auth.signOut();
