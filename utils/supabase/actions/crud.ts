@@ -1,3 +1,4 @@
+"use server";
 import { createClient } from "@/utils/supabase/server";
 
 // Create, Read, Update, Delete (CRUD) operations for users

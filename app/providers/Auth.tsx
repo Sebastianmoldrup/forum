@@ -32,9 +32,13 @@ export default function AuthProvider({
     fetchUser();
   }, []);
 
-  return (
-    <AuthContext.Provider value={{ authenticated }}>
-      {children}
-    </AuthContext.Provider>
-  );
+  const authStatus = (): boolean => {
+    return authenticated;
+  };
+
+  const values = {
+    authStatus,
+  };
+
+  return <AuthContext.Provider value={values}>{children}</AuthContext.Provider>;
 }
