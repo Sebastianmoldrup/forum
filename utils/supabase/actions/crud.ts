@@ -1,4 +1,5 @@
 "use server";
+import { User } from "@/app/types";
 import { createClient } from "@/utils/supabase/server";
 
 // Create, Read, Update, Delete (CRUD) operations for users
@@ -14,6 +15,15 @@ import { createClient } from "@/utils/supabase/server";
 
 interface UserData {
   col: string;
+  uid: string;
+  username: string;
+  email: string;
+  avatar_url: string;
+  created_at: string;
+}
+
+interface Profile {
+  id: number;
   uid: string;
   username: string;
   email: string;
@@ -45,8 +55,9 @@ export const createUser = async (
 export const readUser = async (): Promise<{
   success: boolean;
   error: boolean;
+  data?: User;
 }> => {
-  console.log("run readUser");
+  // console.log("run readUser");
   const supabase = await createClient();
 
   const { data: authData, error: authError } = await supabase.auth.getUser();
@@ -54,9 +65,7 @@ export const readUser = async (): Promise<{
 
   if (authError) {
     return { success: false, error: true };
-  }
-  if (authData) {
-    console.log("authData.user.id", authData.user.id);
+  } else if (authData) {
     const { data: userData, error: userError } = await supabase
       .from("users")
       .select("*")
@@ -66,10 +75,15 @@ export const readUser = async (): Promise<{
     if (userError) {
       return { success: false, error: true };
     } else if (userData) {
-      return { success: true, error: false };
+      const values = {
+        username: userData.username,
+        email: userData.email,
+        avatar_url: userData.avatar_url,
+      };
+      return { success: true, error: false, data: values };
+    } else {
+      return { success: false, error: true };
     }
-
-    return { success: false, error: true };
   }
 
   return { success: false, error: true };
